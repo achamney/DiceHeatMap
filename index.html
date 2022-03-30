@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <title>Dice Heat Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        var freq = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $("document").ready(() => {
+            drawBars();
+            $('.bar').each((ind, b) => {
+                setClick(ind, b);
+            });
+            $('button').each((ind, b) => {
+                setClick(ind, b);
+            });
+        });
+        function setClick(ind, b) {
+            $(b).click(() => { freq[ind]++; drawBars(); });
+            
+        }
+        function drawBars() {
+            var totals = freq.reduce((prev, cur) => prev + cur);
+            $("#total").html(totals);
+            $('.bar').each((ind, b) => {
+                var probNumerator = ind > 5 ? (-1 * ((ind + 1) - 12)) : (ind + 1);
+                var prob = probNumerator / 36;
+                var colorMag = totals > 0 ? (freq[ind] - prob* totals)*40 : 0;
+                $(b).css("height", probNumerator * 2 + 2 + "vh")
+                    .css("background-color", `rgb(${127-(-colorMag)},0,${127 - colorMag})`)
+                    .html(freq[ind]);
+            })
+        }
+    </script>
+    <style>
+        .bar {
+            border: 1px solid black;
+            width: 6.5vw;
+            height: 10px;
+            display: inline-block;
+            vertical-align: bottom;
+            color: white;
+            font-size: 3vh;
+            padding-left:0.5vw;
+        }
+
+        button {
+            width: 7.15vw;
+            border: 1px solid black;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Dice Heat Map</h1>
+    <div id="body">
+        <div id="bars">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <div id="buttons">
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>10</button>
+            <button>11</button>
+            <button>12</button>
+        </div>
+        <h2>Total Dice Rolls: <span id="total"></span></h2>
+    </div>
+</body>
+
+</html>

@@ -7,18 +7,27 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script>
         var freq = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var diceRoll = [];
         $("document").ready(() => {
             drawBars();
             $('.bar').each((ind, b) => {
                 setClick(ind, b);
             });
-            $('button').each((ind, b) => {
+            $('#buttons button').each((ind, b) => {
                 setClick(ind, b);
             });
+            $("#undo").click(() => {
+                freq[diceRoll[diceRoll.length - 1]]--;
+                diceRoll.pop();
+                drawBars();
+            })
         });
         function setClick(ind, b) {
-            $(b).click(() => { freq[ind]++; drawBars(); });
-            
+            $(b).click(() => {
+                diceRoll.push(ind);
+                freq[ind]++;
+                drawBars();
+            });
         }
         function drawBars() {
             var totals = freq.reduce((prev, cur) => prev + cur);
@@ -26,9 +35,9 @@
             $('.bar').each((ind, b) => {
                 var probNumerator = ind > 5 ? (-1 * ((ind + 1) - 12)) : (ind + 1);
                 var prob = probNumerator / 36;
-                var colorMag = totals > 0 ? (freq[ind] - prob* totals)*40 : 0;
+                var colorMag = totals > 0 ? (freq[ind] - prob * totals) * 40 : 0;
                 $(b).css("height", probNumerator * 2 + 2 + "vh")
-                    .css("background-color", `rgb(${127-(-colorMag)},0,${127 - colorMag})`)
+                    .css("background-color", `rgb(${127 - (-colorMag)},0,${127 - colorMag})`)
                     .html(freq[ind]);
             })
         }
@@ -42,7 +51,7 @@
             vertical-align: bottom;
             color: white;
             font-size: 3vh;
-            padding-left:0.5vw;
+            padding-left: 0.5vw;
         }
 
         button {
@@ -83,6 +92,7 @@
             <button>12</button>
         </div>
         <h2>Total Dice Rolls: <span id="total"></span></h2>
+        <button id="undo">Undo</button>
     </div>
 </body>
 
